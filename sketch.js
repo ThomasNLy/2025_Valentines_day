@@ -19,6 +19,20 @@ let GAMESTATES = {
 	PLAYING: 2
 }
 let gameState;
+//---------------------MAIN MENU VARS-------
+let MENUSTATE = {
+	MAINMENU: 0,
+	CONTROSLMENU: 1
+};
+let menuState = MENUSTATE.MAINMENU;
+let startGame = false;
+
+let startButton;
+let controlsMenuButton;
+let exitControlsMenuButton;
+
+
+
 function loadItems(){
 	items = [];
 	for (let i = 0; i  < 8; i++){
@@ -75,44 +89,58 @@ function setup() {
 	replyChosen = false;
 	gameState = GAMESTATES.PLAYING;
 
+	//---------------------MAIN MENU----------
+	loadMenuButtons();
 
 }
 
 function draw() {
-	
-	
-	if (points >= 8){
-		canShoot = true;
-	}
-	image(BG, 0, 0);
-	
-	updateItems();
-	controls();
-	player.move();
-	player.display();
-	
-	//-----------------for loop for moving and displaying bullets------------
-	for (let i = 0; i < bullets.length; i++) {
-		
-
-		bullets[i].move();
-		bullets[i].display();
-
-		if (!bullets[i].alive) {
-			bullets.splice(i, 1);
+	//playSong();
+	if (startGame){
+		if (points >= 8){
+			canShoot = true;
 		}
+		image(BG, 0, 0);
+		
+		updateItems();
+		controls();
+		player.move();
+		player.display();
+		
+		//-----------------for loop for moving and displaying bullets------------
+		for (let i = 0; i < bullets.length; i++) {
+			
+	
+			bullets[i].move();
+			bullets[i].display();
+	
+			if (!bullets[i].alive) {
+				bullets.splice(i, 1);
+			}
+	
+		}
+		
+		if(points >= 8){
+			updateReplyItems();
+		}
+		
+	
+		//debug();
+		//-------------------DISPLATYING THE UI--------------------
+		UI();
 
 	}
 	
-	if(points >= 8){
-		updateReplyItems();
+	else{
+		if(menuState === MENUSTATE.MAINMENU){
+			mainMenu();
+		}
+		else{
+			controlsMenu();
+		}
+		
 	}
 	
-
-	//debug();
-	//-------------------DISPLATYING THE UI--------------------
-	UI();
-	mainMenu();
 
 }
 
@@ -162,6 +190,9 @@ function mousePressed() {
   if (canShoot === true) {
     shootAbility();
   }
+  startButton.onClick();
+  controlsMenuButton.onClick();
+  exitControlsMenuButton.onClick();
 }
 
 let controls = () => {
@@ -314,7 +345,48 @@ function mainMenu(){
 	textStyle(BOLD);
 	textAlign(CENTER);
 	text("Will you be my Valentine?", width/2, height/2 - 100);
-	image(mainMenuPic, width/2, height/2);
+	image(mainMenuPic, width/2 - mainMenuPic.width/2 - 20, height/2 - 100);
+	startButton.display();
+	controlsMenuButton.display();
+	
+}
+
+function controlsMenu(){
+	background(232, 90, 100);
+	fill(0);
+	stroke(100);
+	strokeWeight(4);
+	fill(255);
+	textSize(50);
+	textStyle(BOLD);
+	textAlign(CENTER);
+	text("CONTROLS", width/2, 100);
+	
+	
+	textSize(20);
+	stroke(0);
+	strokeWeight(1);
+	textStyle(NORMAL);
+	textAlign(LEFT);
+	text("Collect all 8 hearts to unlock the ability to give your response", 200, height/2 - 80);
+	text("Once all 8 hearts have been collected \npress the left mouse button and shoot hearts towards your response", 200, height/2 );
+	image(controlsMenuPic, 120, height/2 - 120);
+	exitControlsMenuButton.display();
+}
+function loadMenuButtons(){
+	startButton = new Button(width/2 - 70, height/2 + 30, 100, 50, "START");
+	startButton.ClickEvent = () =>{startGame = true;}
+	controlsMenuButton = new Button(width/2 - 70, height/2 + 120, 100, 50, "CONTROLS");
+	controlsMenuButton.ClickEvent = () =>{openControlsMenu();};
+	exitControlsMenuButton = new Button(60, 50, 100, 50, "CLOSE");
+	exitControlsMenuButton.ClickEvent = () =>{closeControlsMenu();}
+}
+
+function openControlsMenu(){
+	menuState = MENUSTATE.CONTROSLMENU;
+}
+function closeControlsMenu(){
+	menuState  = MENUSTATE.MAINMENU;
 }
 
 

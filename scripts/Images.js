@@ -7,6 +7,7 @@ let noPic;
 let hpBarPic;
 let brokenHeartPic;
 let winScreenHeartPic;
+let controlsMenuPic;
 //let mainMenuPic;
 //function is called in sketch.js, ./ will refer to the root folder
 function loadImages(){
@@ -20,12 +21,15 @@ function loadImages(){
     hpBarPic = loadImage("./data/UI/hp_bar_outline.png");
     brokenHeartPic = loadImage("./data/UI/broken_heart.png");
     winScreenHeartPic = loadImage("./data/Bullet/bullet_heart.png")
-    //mainMenuPic = loadImage("./data/Items/heart_wrapped.png");
+    mainMenuPic = loadImage("./data/Items/heart_wrapped.png");
+    controlsMenuPic = loadImage("./data/Items/heart_wrapped.png");
+
 }
 function resizeImages(){
     BG.resize(1024, 576);
 	playerLeftPic.resize(48, 48);
     hpBarPic.resize(128, 64);	
     winScreenHeartPic.resize(128, 128);
-    //mainMenuPic.resize(128, 128);
+    mainMenuPic.resize(128, 128);
+    controlsMenuPic.resize(64, 64);
 }
