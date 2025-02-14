@@ -156,10 +156,12 @@ function keyPressed() {
 	if (key == 'a' || key == 'A') {
 
 		leftKey = true;
+		player.pic = playerLeftPic;
 	}
 	if (key == 'd' || key == 'D') {
 
 		rightKey = true;
+		player.pic = playerRightPic;
 	}
 
 	if (keyCode == ENTER && gameState === GAMESTATES.GAMEOVER){

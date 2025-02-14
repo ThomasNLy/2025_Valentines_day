@@ -28,6 +28,7 @@ function loadImages(){
 function resizeImages(){
     BG.resize(1024, 576);
 	playerLeftPic.resize(48, 48);
+    playerRightPic.resize(48, 48);
     hpBarPic.resize(128, 64);	
     winScreenHeartPic.resize(128, 128);
     mainMenuPic.resize(128, 128);
