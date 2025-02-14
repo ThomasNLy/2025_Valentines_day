@@ -370,7 +370,14 @@ function controlsMenu(){
 	textAlign(LEFT);
 	text("Collect all 8 hearts to unlock the ability to give your response", 200, height/2 - 80);
 	text("Once all 8 hearts have been collected \npress the left mouse button and shoot hearts towards your response", 200, height/2 );
+	text("Controls the cat with WASD on the keyboard ", 200, height/2 + 100 );
+
 	image(controlsMenuPic, 120, height/2 - 120);
+
+
+
+
+
 	exitControlsMenuButton.display();
 }
 function loadMenuButtons(){
