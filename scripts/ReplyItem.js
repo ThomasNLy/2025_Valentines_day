@@ -1,6 +1,9 @@
 let SHIELD = 0;
 let NOSHIELD = 1;
 
+
+let YESOPTION = 0;
+let NOOPTION  = 1;
 class ReplyItem {
 	constructor(x, y, text) {
 		this.x = x;
@@ -11,6 +14,16 @@ class ReplyItem {
 		this.shield = new Shield(this.x, this.y, this.w + 20, this.h + 20);
 		this.hp = 8;
 		this.maxHp = 8;
+		
+		if (text === "yes"){
+			this.pic = yesPic;
+			this.optionType = YESOPTION;
+		}
+		else{
+			this.pic = noPic;
+			this.optionType = NOOPTION;
+		}
+		
 	}
 
 	display() {
@@ -20,19 +33,17 @@ class ReplyItem {
 			this.shield.display();
 		}
 
-		fill(255, 0, 0);
-		rect(this.x, this.y, 10, 10);
-		text(this.text, this.x, this.y);
-		this.hitbox.display();
-		this.hitbox.update(this.x, this.y);
+		image(this.pic, this.x, this.y);
+		
 		this.hpBar();
 	}
 
 	hpBar(){
-		fill(0);
-		rect(this.x, this.y, 100, 50);
 		fill(255, 0, 0);
-		rect(this.x, this.y, 100 * this.hp/this.maxHp, 50);
+		rect(this.x + 3.5, this.y-30, 119 * this.hp/this.maxHp, 20);
+		image(hpBarPic, this.x ,this.y - 50);
+		
+		
 	}
 	
 	takeDamage(){
@@ -48,5 +59,11 @@ class ReplyItem {
 	}
 	static get NOSHIELDTYPE(){
 		return NOSHIELD;
+	}
+	static get NOOPTIONTYPE(){
+		return NOOPTION;
+	}
+	static get YESOPTIONTYPE(){
+		return YESOPTION;
 	}
 }

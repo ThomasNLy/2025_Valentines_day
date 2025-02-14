@@ -11,11 +11,25 @@ let points;
 let canShoot;
 
 let items;
+let noOptionPicked = false;
+let replyChosen;
+let GAMESTATES = {
+	GAMEOVER : 0,
+	WIN : 1,
+	PLAYING: 2
+}
+let gameState;
 function loadItems(){
 	items = [];
 	for (let i = 0; i  < 8; i++){
-		let randomX = random(50, width-50)
-		let randomY = random(50, height-50);
+		let randomXOffset = random(50, width/2 - 70);
+		let randomXDirection = int(random(0, 2)) > 0 ? 1 : -1;
+		let randomX = randomXOffset * randomXDirection + width/2; 
+		let randomY = random(200, height-50);
+
+		if (randomX < 0 || randomX > width){
+			randomX = 200;
+		}
 		items.push(new Item(randomX, randomY));
 	}
 }
@@ -26,8 +40,8 @@ function preload(){
 
 function setup() {
 	createCanvas(1024, 576);
-	BG.resize(1024, 576);
-	playerLeftPic.resize(48, 48);	
+	resizeImages();
+	
 
 	player = new Player();
 	bullets = []; // javasript array/ arraylist equivalent combined
@@ -35,9 +49,12 @@ function setup() {
 	//------------reply item options----------
 
 	replyOptions = [];
-	replyOptions.push(new ReplyItem(100, 200, "yes"));
-	let noOption = new ReplyItem(100, 300, "no");
-	noOption.type = ReplyItem.SHIELDTYPE;
+	replyOptions.push(new ReplyItem(700, 100, "yes"));
+	let noOption = new ReplyItem(200, 100, "no");
+	if (noOptionPicked){
+		noOption.type = ReplyItem.SHIELDTYPE;
+	}
+	
 	replyOptions.push(noOption);
 	
 	
@@ -50,10 +67,13 @@ function setup() {
 	//------------ setting up items------------
 	loadItems();
 
-	points = 8;
+	points = 0;
 
 	//----------------
 	canShoot = false;
+
+	replyChosen = false;
+	gameState = GAMESTATES.PLAYING;
 
 
 }
@@ -70,7 +90,7 @@ function draw() {
 	controls();
 	player.move();
 	player.display();
-
+	
 	//-----------------for loop for moving and displaying bullets------------
 	for (let i = 0; i < bullets.length; i++) {
 		
@@ -84,47 +104,55 @@ function draw() {
 
 	}
 	
-	updateReplyItems();
+	if(points >= 8){
+		updateReplyItems();
+	}
+	
 
 	//debug();
 	//-------------------DISPLATYING THE UI--------------------
 	UI();
+	mainMenu();
 
 }
 
 function keyPressed() {
-	if (key == 'w') {
+	if (key == 'w' || key == 'W') {
 
 		upKey = true;
 	}
-	if (key == 's') {
+	if (key == 's' || key == 'S') {
 
 		downKey = true;
 	}
-	if (key == 'a') {
+	if (key == 'a' || key == 'A') {
 
 		leftKey = true;
 	}
-	if (key == 'd') {
+	if (key == 'd' || key == 'D') {
 
 		rightKey = true;
+	}
+
+	if (keyCode == ENTER && gameState === GAMESTATES.GAMEOVER){
+		setup();
 	}
 	
 }
 
 function keyReleased() {
-	if (key == 'w') {
+	if (key == 'w' || key == 'W') {
 
 		upKey = false;
 	}
 
-	if (key == 'a') {
+	if (key == 'a' || key == 'A') {
 		leftKey = false;
 	}
-	if (key == 'd') {
+	if (key == 'd' || key == 'D') {
 		rightKey = false;
 	}
-	if (key == 's') {
+	if (key == 's' || key == 'S') {
 		downKey = false;
 	}
 	
@@ -164,16 +192,10 @@ function collision(a, b) {
 
 function debug() {
 
-	
+	fill(255);
+	text(`${mouseX} ${mouseY}`, mouseX, mouseY);
 }
 
-function UI() {
-	fill(255);
-	textSize(15);
-	textAlign(LEFT);
-	text("Hearts collected: " + points, 10, 30);	
-	noFill();
-}
 
 function updateItems(){
 	for (let i = 0; i  < items.length; i++){
@@ -189,6 +211,15 @@ function updateItems(){
 function updateReplyItems(){
 	for(let replyItem of replyOptions){
 		replyItem.display();
+		if (replyItem.optionType === ReplyItem.YESOPTIONTYPE && replyItem.hp <= 0){
+			gameState = GAMESTATES.WIN;
+		}
+		else if (replyItem.optionType === ReplyItem.NOOPTIONTYPE && replyItem.hp <= 0) {
+			noOptionPicked = true;
+			gameState = GAMESTATES.GAMEOVER;
+			
+		}
+		
 	}
 	
 	for (let i = bullets.length - 1; i >= 0; i--){
@@ -196,12 +227,16 @@ function updateReplyItems(){
 		for(let replyItem of replyOptions){
 			
 			if(collision( currentBullet.hitbox, replyItem.hitbox) === true){
-				replyItem.takeDamage();
+				
 				if (replyItem.type === ReplyItem.SHIELDTYPE){
 					currentBullet.reflect(replyItem.hitbox);
 				}
 				else{
 					bullets.splice(i, 1);
+					if (gameState === GAMESTATES.PLAYING){
+						replyItem.takeDamage();
+					}
+					
 				}
 			}	
 		}
@@ -213,3 +248,73 @@ function shootAbility() {
 	let bulletYDir = sin(player.returnAngle);
 	bullets.push(new Bullet(player.x + cos(player.returnAngle) * 40, player.y + sin(player.returnAngle) * 40, bulletXDir, bulletYDir));
 }
+
+//-------------------UI---------------------------------
+function UI() {
+	fill(255);
+	textSize(15);
+	textAlign(LEFT);
+	textStyle(NORMAL);
+	text("Hearts collected: " + points, 10, 30);	
+	noFill();
+
+	fill(255);
+	textSize(30);
+	textStyle(BOLD);
+	textAlign(CENTER);
+	text("Will you be my Valentine?", width/2, 50);
+
+	if (gameState === GAMESTATES.GAMEOVER){
+		retryScreen();
+	}
+	else if (gameState === GAMESTATES.WIN){
+		winScreen();
+	}
+		
+	
+	
+}
+
+function retryScreen(){
+	fill(0);
+	stroke(0);
+	strokeWeight(4);
+	fill(255);
+	textSize(30);
+	textStyle(BOLD);
+	textAlign(CENTER);
+	text("No? are you sure? Let's try again. \n \n press ENTER to play again", width/2, height/2);
+	strokeWeight(1);
+
+	image(brokenHeartPic, width/2 - brokenHeartPic.width/2, height/2 - brokenHeartPic.height/2 - 100);
+	
+}
+
+function winScreen(){
+	fill(0);
+	stroke(0);
+	strokeWeight(4);
+	fill(255);
+	textSize(30);
+	textStyle(BOLD);
+	textAlign(CENTER);
+	text("Let's go out for Valentine's day then.\n \n 一生あなたを愛し続けます", width/2, height/2);
+	strokeWeight(1);
+	image(winScreenHeartPic, width/2 - winScreenHeartPic.width/2, height/2 - winScreenHeartPic.height/2 - 100);
+}
+
+//-------------------------MENUS------------
+function mainMenu(){
+	background(232, 90, 100);
+	fill(0);
+	stroke(100);
+	strokeWeight(4);
+	fill(255);
+	textSize(50);
+	textStyle(BOLD);
+	textAlign(CENTER);
+	text("Will you be my Valentine?", width/2, height/2 - 100);
+	image(mainMenuPic, width/2, height/2);
+}
+
+

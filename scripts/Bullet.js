@@ -17,7 +17,7 @@ class Bullet{
 		translate(this.x, this.y);
 		image(this.pic, -this.center, -this.center);
 		resetMatrix();
-		this.hitbox.display();
+		
 		
 	}
 	move(){
