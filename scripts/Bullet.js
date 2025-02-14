@@ -4,23 +4,28 @@ class Bullet{
 		this.y = y; 
 		this.xdir = xdir.toFixed(2);
 		this.ydir = ydir.toFixed(2);
-		this.xspeed = 10;
-		this.yspeed = 10;
-		this.size = 20;
+		this.xspeed = 2;
+		this.yspeed = 2;
 		this.alive = true;
 		this.lifespan = 100;
-		this.hitBox = new Hitbox(this.x, this.y, this.size/2, this.size/2);
-		this.colour =  color(0, 140, 200);
+		this.pic = bulletPic;
+		this.center = this.pic.width/2;
+		this.hitbox = new Hitbox(this.x, this.y, this.pic.width, this.pic.height, -this.center, -this.center);
 	}
 	
 	display(){
-		fill(this.colour);
-		circle(this.x, this.y, this.size);
+		translate(this.x, this.y);
+		image(this.pic, -this.center, -this.center);
+		resetMatrix();
+		this.hitbox.display();
+		
 	}
 	move(){
 		this.x += this.xdir * this.xspeed;
-		this.y += this.ydir *  this.yspeed;
-		this.hitBox.update(this.x, this.y);
+		this.y += this.ydir * this.yspeed;
+
+		//center hitbox around heart: places top left corner of hitbox at given x coordinate
+		this.hitbox.update(this.x , this.y);
 		if(this.x < 0 || this.x > width || this.y > height || this.y < 0)
 		{
 			this.alive = false;
@@ -53,7 +58,7 @@ class Bullet{
 		
 	} 
 	pointOfContact(other){
-		const r = this.size/2;
+
 		if(this.x  <= other.x){
 			//console.log("left");
 			return createVector(other.x, this.y);
@@ -76,13 +81,5 @@ class Bullet{
 			
 		
 		
-	}
-	collision(other){
-		const r = this.size/2;
-		if(this.x + r > other.x && this.x - r < other.x + other.w && this.y + r > other.y && this.y - r < other.y + other.h)
-		{
-			return true;
-		}
-		return false;
 	}
 }
