@@ -165,6 +165,10 @@ function keyPressed() {
 	if (keyCode == ENTER && gameState === GAMESTATES.GAMEOVER){
 		setup();
 	}
+	else if(keyCode == ENTER && gameState === GAMESTATES.WIN){
+		openSongTab();
+	}
+
 	
 }
 
@@ -330,6 +334,7 @@ function winScreen(){
 	textStyle(BOLD);
 	textAlign(CENTER);
 	text("Let's go out for Valentine's day then.\n \n 一生あなたを愛し続けます", width/2, height/2);
+	text("Press ENTER to see the song that represents my love for you", width/2, height/2 + 150)
 	strokeWeight(1);
 	image(winScreenHeartPic, width/2 - winScreenHeartPic.width/2, height/2 - winScreenHeartPic.height/2 - 100);
 }
