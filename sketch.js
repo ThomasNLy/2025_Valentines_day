@@ -28,7 +28,7 @@ let menuState = MENUSTATE.MAINMENU;
 let startGame = false;
 
 let startButton;
-let controlsMenuButton;
+let howToPlayMenuButton;
 let exitControlsMenuButton;
 
 
@@ -191,7 +191,7 @@ function mousePressed() {
     shootAbility();
   }
   startButton.onClick();
-  controlsMenuButton.onClick();
+  howToPlayMenuButton.onClick();
   exitControlsMenuButton.onClick();
 }
 
@@ -347,7 +347,7 @@ function mainMenu(){
 	text("Will you be my Valentine?", width/2, height/2 - 100);
 	image(mainMenuPic, width/2 - mainMenuPic.width/2 - 20, height/2 - 100);
 	startButton.display();
-	controlsMenuButton.display();
+	howToPlayMenuButton.display();
 	
 }
 
@@ -370,7 +370,7 @@ function controlsMenu(){
 	textAlign(LEFT);
 	text("Collect all 8 hearts to unlock the ability to give your response", 200, height/2 - 80);
 	text("Once all 8 hearts have been collected \npress the left mouse button and shoot hearts towards your response", 200, height/2 );
-	text("Controls the cat with WASD on the keyboard ", 200, height/2 + 100 );
+	text("Control the cat with WASD on the keyboard ", 200, height/2 + 100 );
 
 	image(controlsMenuPic, 120, height/2 - 120);
 
@@ -381,10 +381,10 @@ function controlsMenu(){
 	exitControlsMenuButton.display();
 }
 function loadMenuButtons(){
-	startButton = new Button(width/2 - 70, height/2 + 30, 100, 50, "START");
+	startButton = new Button(width/2 - 80, height/2 + 30, 120, 50, "START");
 	startButton.ClickEvent = () =>{startGame = true;}
-	controlsMenuButton = new Button(width/2 - 70, height/2 + 120, 100, 50, "CONTROLS");
-	controlsMenuButton.ClickEvent = () =>{openControlsMenu();};
+	howToPlayMenuButton = new Button(width/2 - 80, height/2 + 120, 120, 50, "HOW TO PLAY");
+	howToPlayMenuButton.ClickEvent = () =>{openControlsMenu();};
 	exitControlsMenuButton = new Button(60, 50, 100, 50, "CLOSE");
 	exitControlsMenuButton.ClickEvent = () =>{closeControlsMenu();}
 }
